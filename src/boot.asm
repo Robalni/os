@@ -21,12 +21,20 @@ bootloader:
         int 0x10
 
         cli
+        xor ax, ax
+        mov ds, ax
+        mov es, ax
+        mov fs, ax
+        mov gs, ax
+        mov ss, ax
+        lgdt [gdt]
+
         ;; Protected mode
         mov eax, cr0
         or eax, 1
         mov cr0, eax
 
-        jmp 0x08:protected
+        jmp 0x08:protected      ; selector 8 (first after 0) in gdt
 
 protected:
         use32
@@ -41,22 +49,23 @@ protected:
         mov eax, 0x7bff
         mov esp, eax
 
-        lgdt [gdt]
-        lidt [idtr]
-
         jmp 0x7e00
         hlt
 
+;;; GDT - Global Descriptor Table
+;;; Access bits high to low:
+;;;   present, privilege[2], 1,
+;;;   execute, direction/conforming, read/write, accessed
 gdt_start:
         dq 0
-        ;; code
+gdt_code:
         dw 0xffff               ; limit 0:15
         dw 0x0000               ; base 0:15
         db 0x00                 ; base 16:23
         db 0x10011010           ; access byte
-        db 0x4f                 ; limit = 16:19, high = flags
+        db 0x4f                 ; low = limit 16:19, high = flags
         db 0x00                 ; base 24:31
-        ;; data
+gdt_data:
         dw 0xffff               ; limit 0:15
         dw 0x0000               ; base 0:15
         db 0x00                 ; base 16:23
@@ -64,10 +73,10 @@ gdt_start:
         db 0x4f                 ; low = limit 16:19, high = flags
         db 0x00                 ; base 24:31
 gdt:
-        dw ($ - gdt) - 1
-        dd gdt
+        dw (gdt - gdt_start) - 1
+        dd gdt_start
 
-idtr:
+idt:
         
 
 mark_bootable:
