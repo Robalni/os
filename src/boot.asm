@@ -57,6 +57,11 @@ int_handle:
         pop eax
         iret
 
+int_handle_kbd:
+        jmp $
+        pop eax
+        iret
+
 ;;; GDT - Global Descriptor Table
 ;;; Access bits high to low:
 ;;;   present, privilege[2], 1,
@@ -92,13 +97,22 @@ gdt:
 ;;;   1110: 80386 32-bit interrupt gate
 ;;;   1111: 80386 32-bit trap gate
 idt_start:
-        times (8 * 13) db 0x00
+        times (0x0d * 8 - ($ - idt_start)) db 0x00
 idt_gpf:
         dw int_handle           ; offset 0:15
         dw 0x08                 ; code segment selector
         db 0x00                 ; unused
         db 0b1000_1110          ; type/attributes
         dw 0x0000               ; offset 16:31
+
+        times (0x15 * 8 - ($ - idt_start)) db 0x00
+idt_keyboard:
+        dw int_handle_kbd       ; offset 0:15
+        dw 0x08                 ; code segment selector
+        db 0x00                 ; unused
+        db 0b1000_1110          ; type/attributes
+        dw 0x0000               ; offset 16:31
+
 idt:
         dw (idt - idt_start) - 1
         dd idt_start
