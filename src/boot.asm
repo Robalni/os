@@ -27,6 +27,7 @@ bootloader:
         mov fs, ax
         mov gs, ax
         mov ss, ax
+        lidt [idt]
         lgdt [gdt]
 
         ;; Protected mode
@@ -49,8 +50,12 @@ protected:
         mov eax, 0x7bff
         mov esp, eax
 
+        sti
         jmp 0x7e00
-        hlt
+
+int_handle:
+        pop eax
+        iret
 
 ;;; GDT - Global Descriptor Table
 ;;; Access bits high to low:
@@ -76,8 +81,27 @@ gdt:
         dw (gdt - gdt_start) - 1
         dd gdt_start
 
+;;; IDT - Interrupt Descriptor Table
+;;; Type/attributes bits:
+;;;   present, minimum-privilege[2], storage-segment (0 for int gates)
+;;;   gate-type[4]
+;;; Gate-type:
+;;;   0101: 80386 32 bit task gate
+;;;   0110: 80286 16-bit interrupt gate
+;;;   0111: 80286 16-bit trap gate
+;;;   1110: 80386 32-bit interrupt gate
+;;;   1111: 80386 32-bit trap gate
+idt_start:
+        times (8 * 13) db 0x00
+idt_gpf:
+        dw int_handle           ; offset 0:15
+        dw 0x08                 ; code segment selector
+        db 0x00                 ; unused
+        db 0b1000_1110          ; type/attributes
+        dw 0x0000               ; offset 16:31
 idt:
-        
+        dw (idt - idt_start) - 1
+        dd idt_start
 
 mark_bootable:
         ;; Mark this device as bootable.
