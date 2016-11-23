@@ -62,7 +62,7 @@ gdt_code:
         dw 0xffff               ; limit 0:15
         dw 0x0000               ; base 0:15
         db 0x00                 ; base 16:23
-        db 0x10011010           ; access byte
+        db 0b10011010           ; access byte
         db 0x4f                 ; low = limit 16:19, high = flags
         db 0x00                 ; base 24:31
 gdt_data:
