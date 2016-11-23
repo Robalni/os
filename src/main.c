@@ -73,6 +73,20 @@ void rect(int x, int y, int w, int h, int color)
   }
 }
 
+void circle(int x, int y, int r, int color)
+{
+  int i, j;
+  for (i = x-r; i < x+r; i++) {
+    for (j = y-r; j < y+r; j++) {
+      int ii = i - x;
+      int jj = j - y;
+      if (ii*ii + jj*jj <= r*r) {
+        setpixel(i, j, color);
+      }
+    }
+  }
+}
+
 void line(int x1, int y1, int x2, int y2, int color)
 {
   int i;
@@ -86,7 +100,7 @@ void text(int x, int y, int size, char *str, int color)
 {
   int i = 0;
   for (i = 0; str[i] != '\0'; i++) {
-    rect(x + (size+1)*i, y, size, size, color);
+    circle(x + (2*size+1)*i, y, size, color);
   }
 }
 
@@ -96,5 +110,5 @@ void paint()
   line(330, 230, 310, 250, 0xff);
   line(310, 230, 330, 250, 0xff);
   char hello[] = "Hello";
-  text(0, 0, 20, hello, 1);
+  text(10, 10, 10, hello, 1);
 }
