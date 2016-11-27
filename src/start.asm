@@ -35,9 +35,9 @@ int_handle_kbd:
         mov al, 0x20
         out 0x20, al
         pop eax
+        xor bh, bh
         push ebx
         call key_pressed
-        xor ah, ah
         pop eax
         iret
 
@@ -71,4 +71,3 @@ idt_keyboard:
 idt:
         dw (idt - idt_start) - 1
         dd idt_start
-
