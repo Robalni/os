@@ -5,6 +5,7 @@
 
 static char * const vidmem = (char*)0xb8000;
 static char * const vidmem2 = (char*)0xa0000;
+static const char * const figures = "0123456789ABCDEF";
 
 enum color {
   BLACK, BLUE, GREEN, CYAN,
@@ -14,6 +15,10 @@ enum color {
 };
 
 int print(int x, int y, enum color color, char *msg);
+
+void int2str(int number, char *str, int base);
+
+int pow(int base, int exp);
 
 void paint(void);
 
@@ -44,6 +49,28 @@ int print(int x, int y, enum color color, char *msg)
     msg_i++;
   }
   return msg_i;
+}
+
+void int2str(int number, char *str, int base)
+{
+  int pos = 0;
+  int posvalue = pow(base, 6);
+  while (pos < 6) {
+    str[pos] = *(figures + number / posvalue % base);
+    pos++;
+    posvalue /= base;
+  }
+  str[pos] = '\0';
+}
+
+int pow(int base, int exp)
+{
+  int value = 1;
+  int i;
+  for (i = 0; i < exp; i++) {
+    value *= base;
+  }
+  return value;
 }
 
 void setpixel(int x, int y, int color)
@@ -105,11 +132,20 @@ void text(int x, int y, int size, char *str, int color)
   }
 }
 
-void paint()
+void paint(void)
 {
   rect(0, 20, 640, 1, 0xff);
   line(330, 230, 310, 250, 0xff);
   line(310, 230, 330, 250, 0xff);
   char hello[] = "Hello";
   text(10, 10, 7, hello, 1);
+}
+
+void key_pressed(int key)
+{
+  int pos = 0;
+  pos += print(pos, 0, CYAN, "Key pressed: 0x");
+  char key_str[10];
+  int2str(key, key_str, 16);
+  pos += print(pos, 0, CYAN, key_str);
 }
