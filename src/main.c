@@ -48,7 +48,7 @@ void paint(void);
 
 void kmain(void)
 {
-  paint();
+  //paint();
   //asm("cli");  // ignore interrupts
   int cur = 2;
   /*
@@ -56,6 +56,7 @@ void kmain(void)
                "Hello! Welcome to this operating system kernel.");
   print(30, 12, RED, "It's really cool :D");
   */
+  printat(0, 0, CYAN, "Last key pressed: (none)");
   while (1) {
     halt();
   }
@@ -204,8 +205,8 @@ void key_pressed(int key)
       putchar(kbd_chars_colemak[key]);
     }
   }
-  printat(0, 0, CYAN, "Key pressed: 0x");
+  printat(0, 0, CYAN, "Last key pressed: 0x");
   char key_str[10];
   int2str(key, key_str, 16);
-  printat(15, 0, CYAN, key_str);
+  printat(20, 0, CYAN, key_str);
 }
