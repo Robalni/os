@@ -72,6 +72,13 @@ void putcharat(int x, int y, enum color color, char ch)
   vidmem[i + 1] = color;
 }
 
+void outb(int port, int val)
+{
+  asm("outb %%al, %%dx"
+      :
+      : "al"(val), "dx"(port));
+}
+
 void set_cursor(int cur)
 {
   cursor = cur;
@@ -79,13 +86,6 @@ void set_cursor(int cur)
   outb(*base_video_port + 1, cursor & 0xff);
   outb(*base_video_port, 0x0e);
   outb(*base_video_port + 1, (cursor>>8) & 0xff);
-}
-
-void outb(int port, int val)
-{
-  asm("outb %%al, %%dx"
-      :
-      : "al"(val), "dx"(port));
 }
 
 void putchar(char ch)
@@ -219,6 +219,14 @@ void key_pressed(int key)
   } else if (key == 0x0e) {
     set_cursor(cursor-1);
     putcharat(cursor, 0, LIGHTGREY, ' ');
+  } else if (key == 0x48) {
+    set_cursor(cursor-80);
+  } else if (key == 0x4b) {
+    set_cursor(cursor-1);
+  } else if (key == 0x4d) {
+    set_cursor(cursor+1);
+  } else if (key == 0x50) {
+    set_cursor(cursor+80);
   } else if (key < 0x80) {
     if (shift_down) {
       putchar(kbd_chars_colemak_shift[key]);
