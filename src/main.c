@@ -58,6 +58,7 @@ void kmain(void)
   print(30, 12, RED, "It's really cool :D");
   */
   printat(0, 0, CYAN, "Last key pressed: (none)");
+  set_cursor(80);
   while (1) {
     halt();
   }
