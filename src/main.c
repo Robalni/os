@@ -19,12 +19,12 @@ static const char * const kbd_chars_qwerty =
 static const char * const kbd_chars_colemak =
   "\x00 1234567890-=  "
   "qwfpgjluy;[]  "
-  "arstdhneio'\\  "
+  "arstdhneio'` \\"
   "zxcvbkm,./    ";
 static const char * const kbd_chars_colemak_shift =
   "\x00 !@#$%^&*()_+  "
   "QWFPGJLUY:{}  "
-  "ARSTDHNEIO\"|  "
+  "ARSTDHNEIO\"~ |"
   "ZXCVBKM<>?    ";
 
 enum color {
