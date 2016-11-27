@@ -11,6 +11,7 @@ static const char * const figures = "0123456789ABCDEF";
 int cursor = 80;
 int shift_down = 0;
 int ctrl_down = 0;
+unsigned short *base_video_port = (unsigned short*)0x0463;
 static const char * const kbd_chars_qwerty =
   "\x00 1234567890    "
   "qwertyiop;[]  "
@@ -70,10 +71,26 @@ void putcharat(int x, int y, enum color color, char ch)
   vidmem[i + 1] = color;
 }
 
+void set_cursor(int cur)
+{
+  cursor = cur;
+  outb(*base_video_port, 0x0f);
+  outb(*base_video_port + 1, cursor & 0xff);
+  outb(*base_video_port, 0x0e);
+  outb(*base_video_port + 1, (cursor>>8) & 0xff);
+}
+
+void outb(int port, int val)
+{
+  asm("outb %%al, %%dx"
+      :
+      : "al"(val), "dx"(port));
+}
+
 void putchar(char ch)
 {
   putcharat(cursor, 0, LIGHTGREY, ch);
-  cursor++;
+  set_cursor(cursor+1);
 }
 
 int print(char *msg)
@@ -194,10 +211,13 @@ void key_pressed(int key)
   } else if (key == 0x9d) {
     ctrl_down = 0;
   } else if (key == 0x1c) {
-    cursor = cursor / 80 * 80 + 80;
+    set_cursor(cursor / 80 * 80 + 80);
   } else if (key == 0x16 && ctrl_down) {
     clear_screen();
-    cursor = 80;
+    set_cursor(80);
+  } else if (key == 0x0e) {
+    set_cursor(cursor-1);
+    putcharat(cursor, 0, LIGHTGREY, ' ');
   } else if (key < 0x80) {
     if (shift_down) {
       putchar(kbd_chars_colemak_shift[key]);
