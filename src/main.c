@@ -3,9 +3,29 @@
 #define MIN(x,y) ((x) < (y) ? (x) : (y))
 #define ABS(x) ((x) < 0 ? (-(x)) : (x))
 
+extern void clear_screen(void);
+
 static char * const vidmem = (char*)0xb8000;
 static char * const vidmem2 = (char*)0xa0000;
 static const char * const figures = "0123456789ABCDEF";
+int cursor = 80;
+int shift_down = 0;
+int ctrl_down = 0;
+static const char * const kbd_chars_qwerty =
+  "\x00 1234567890    "
+  "qwertyiop;[]  "
+  "asdfghjkl;'\\  "
+  "zxcvbnm,./    ";
+static const char * const kbd_chars_colemak =
+  "\x00 1234567890-=  "
+  "qwfpgjluy;[]  "
+  "arstdhneio'\\  "
+  "zxcvbkm,./    ";
+static const char * const kbd_chars_colemak_shift =
+  "\x00 !@#$%^&*()_+  "
+  "QWFPGJLUY:{}  "
+  "ARSTDHNEIO\"|  "
+  "ZXCVBKM<>?    ";
 
 enum color {
   BLACK, BLUE, GREEN, CYAN,
@@ -14,7 +34,11 @@ enum color {
   LIGHTRED, LIGHTMAGENTA, LIGHTBROWN, WHITE
 };
 
-int print(int x, int y, enum color color, char *msg);
+void putchar(char ch);
+
+int print(char *msg);
+
+int printat(int x, int y, enum color color, char *msg);
 
 void int2str(int number, char *str, int base);
 
@@ -37,15 +61,32 @@ void kmain(void)
   }
 }
 
-int print(int x, int y, enum color color, char *msg)
+void putcharat(int x, int y, enum color color, char ch)
 {
   char *vidmem = (char*)0xb8000;
-  int i = y * 80 * 2 + x * 2;
+  int i = (x + 80*y) * 2;
+  vidmem[i] = ch;
+  vidmem[i + 1] = color;
+}
+
+void putchar(char ch)
+{
+  putcharat(cursor, 0, LIGHTGREY, ch);
+  cursor++;
+}
+
+int print(char *msg)
+{
+  cursor += printat(cursor, 0, LIGHTGREY, msg);
+}
+
+int printat(int x, int y, enum color color, char *msg)
+{
+  int i = y * 80 + x;
   int msg_i = 0;
   while (msg[msg_i] != '\0') {
-    vidmem[i] = msg[msg_i];
-    vidmem[i + 1] = color;
-    i += 2;
+    putcharat(i, 0, color, msg[msg_i]);
+    i++;
     msg_i++;
   }
   return msg_i;
@@ -54,8 +95,8 @@ int print(int x, int y, enum color color, char *msg)
 void int2str(int number, char *str, int base)
 {
   int pos = 0;
-  int posvalue = pow(base, 6);
-  while (pos < 6) {
+  int posvalue = pow(base, 3);
+  while (pos < 4) {
     str[pos] = *(figures + number / posvalue % base);
     pos++;
     posvalue /= base;
@@ -143,9 +184,28 @@ void paint(void)
 
 void key_pressed(int key)
 {
-  int pos = 0;
-  pos += print(pos, 0, CYAN, "Key pressed: 0x");
+  if (key == 0x2a || key == 0x36) {
+    shift_down = 1;
+  } else if (key == 0xaa || key == 0xb6) {
+    shift_down = 0;
+  } else if (key == 0x1d) {
+    ctrl_down = 1;
+  } else if (key == 0x9d) {
+    ctrl_down = 0;
+  } else if (key == 0x1c) {
+    cursor = cursor / 80 * 80 + 80;
+  } else if (key == 0x16 && ctrl_down) {
+    clear_screen();
+    cursor = 80;
+  } else if (key < 0x80) {
+    if (shift_down) {
+      putchar(kbd_chars_colemak_shift[key]);
+    } else {
+      putchar(kbd_chars_colemak[key]);
+    }
+  }
+  printat(0, 0, CYAN, "Key pressed: 0x");
   char key_str[10];
   int2str(key, key_str, 16);
-  pos += print(pos, 0, CYAN, key_str);
+  printat(15, 0, CYAN, key_str);
 }

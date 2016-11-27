@@ -2,6 +2,7 @@
 
 section .text
         global start
+        global clear_screen
         extern kmain
         extern key_pressed
 
@@ -24,20 +25,32 @@ start:
         call kmain
         jmp $
 
+clear_screen:
+        mov edi, 0xb8000
+        mov ecx, 80*25*2
+        mov al, 0
+        rep stosb
+        ret
+
 int_handle:
         pop eax
         iret
 
 int_handle_kbd:
         push eax
-        in al, 0x60
-        mov bl, al
         mov al, 0x20
         out 0x20, al
         pop eax
-        xor bh, bh
-        push ebx
+
+        xor al, al
+readkbd:
+        xor eax, eax
+        in al, 0x60
+        cmp al, 0
+        je readkbd
+        push eax
         call key_pressed
+
         pop eax
         iret
 
