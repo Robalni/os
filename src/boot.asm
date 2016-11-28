@@ -16,11 +16,6 @@ bootloader:
         mov bx, 0x7e00
         int 0x13
 
-        mov ah, 0
-        mov al, 0x12
-        mov al, 0x03
-        int 0x10
-
         cli
         xor ax, ax
         mov ds, ax

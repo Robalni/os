@@ -2,7 +2,6 @@
 
 section .text
         global start
-        global clear_screen
         extern kmain
         extern key_pressed
 
@@ -24,13 +23,6 @@ start:
 
         call kmain
         jmp $
-
-clear_screen:
-        mov edi, 0xb8000
-        mov ecx, 80*25*2
-        mov al, 0
-        rep stosb
-        ret
 
 int_handle:
         pop eax
