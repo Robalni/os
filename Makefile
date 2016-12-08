@@ -1,10 +1,10 @@
 all: os.img
 
 main.o: src/main.c
-	gcc -m32 -c src/main.c
+	gcc -m32 -ffreestanding -c src/main.c
 
 main.elf: main.o start.o
-	ld -nostdlib -nodefaultlibs -o main.elf -T link.ld start.o main.o
+	ld -nostdlib -o main.elf -T link.ld start.o main.o
 
 main.bin: main.elf
 	objcopy -O binary main.elf main.bin
