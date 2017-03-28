@@ -1,22 +1,25 @@
 all: os.img
 
+start.o: src/start.asm
+	nasm -w+orphan-labels -f elf32 -o start.o src/start.asm
+
 main.o: src/main.c
 	gcc -m32 -ffreestanding -c src/main.c
 
-main.elf: main.o start.o
-	ld -nostdlib -o main.elf -T link.ld start.o main.o
+keyboard.o: src/keyboard.c
+	gcc -m32 -ffreestanding -c src/keyboard.c
 
-main.bin: main.elf
-	objcopy -O binary main.elf main.bin
+os.elf: main.o start.o keyboard.o
+	ld -nostdlib -o os.elf -T link.ld start.o main.o keyboard.o
 
-os.img: main.bin boot.bin
-	cat boot.bin main.bin > os.img
+os.bin: os.elf
+	objcopy -O binary os.elf os.bin
+
+os.img: boot.bin os.bin
+	cat boot.bin os.bin > os.img
 
 boot.bin: src/boot.asm
 	nasm -w+orphan-labels -f bin -o boot.bin src/boot.asm
-
-start.o: src/start.asm
-	nasm -w+orphan-labels -f elf32 -o start.o src/start.asm
 
 clean:
 	rm -f os *.o *.bin *.elf *.img

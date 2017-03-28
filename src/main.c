@@ -1,3 +1,5 @@
+#include "keyboard.h"
+
 #define halt() asm("hlt")
 #define MAX(x,y) ((x) > (y) ? (x) : (y))
 #define MIN(x,y) ((x) < (y) ? (x) : (y))
@@ -49,10 +51,13 @@ void int2str(int number, char *str, int base);
 
 int pow(int base, int exp);
 
+void key_event(int key);
+
 void clear_screen(void);
 
 void kmain(void)
 {
+  set_key_event_handler(key_event);
   clear_screen();
   printat(0, 0, CYAN, "Last key pressed: (none)");
   set_cursor(80);
@@ -130,7 +135,7 @@ int pow(int base, int exp)
   return value;
 }
 
-void key_pressed(int key)
+void key_event(int key)
 {
   if (key == 0x2a || key == 0x36) {
     shift_down = 1;
