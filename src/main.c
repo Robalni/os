@@ -1,3 +1,4 @@
+#include "shell.h"
 #include "keyboard.h"
 #include "console.h"
 
@@ -17,7 +18,7 @@ int pow(int base, int exp);
 
 void kmain(void)
 {
-  set_key_event_handler(console_key_event);
+  set_key_event_handler(shell_key_event);
   clear_screen();
   printat(0, 0, CYAN, "Last key pressed: (none)");
   set_cursor(80);

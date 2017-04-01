@@ -12,8 +12,11 @@ keyboard.o: src/keyboard.c
 console.o: src/console.c
 	gcc -m32 -ffreestanding -c src/console.c
 
-os.elf: main.o start.o keyboard.o console.o
-	ld -nostdlib -o os.elf -T link.ld start.o main.o keyboard.o console.o
+shell.o: src/shell.c
+	gcc -m32 -ffreestanding -c src/shell.c
+
+os.elf: main.o start.o keyboard.o console.o shell.o
+	ld -nostdlib -o os.elf -T link.ld start.o main.o keyboard.o console.o shell.o
 
 os.bin: os.elf
 	objcopy -O binary os.elf os.bin

@@ -8,9 +8,15 @@ enum color {
   LIGHTRED, LIGHTMAGENTA, LIGHTBROWN, WHITE
 };
 
-void putcharat(int x, int y, enum color color, char ch);
+void putchar_at(int x, int y, enum color color, char ch);
+
+void putchar_here(enum color color, char ch);
 
 void set_cursor(int cur);
+
+void move_cursor(int x, int y);
+
+void setmove_cursor(int x, int y);
 
 void putchar(char ch);
 
@@ -19,7 +25,5 @@ int print(char *msg);
 int printat(int x, int y, enum color color, char *msg);
 
 void clear_screen(void);
-
-void console_key_event(int key);
 
 #endif /* CONSOLE_H */
