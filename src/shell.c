@@ -3,6 +3,8 @@
 
 static int shift_down = 0;
 static int ctrl_down = 0;
+static int alt_down = 0;
+static int super_down = 0;
 #define MAX_LINE_LENGTH 50
 static char line[MAX_LINE_LENGTH + 1];
 static int line_at = 0;
@@ -30,6 +32,14 @@ void shell_key_event(int key)
     ctrl_down = 1;
   } else if (key == 0x9d) {
     ctrl_down = 0;
+  } else if (key == 0x38) {
+    alt_down = 1;
+  } else if (key == 0xb8) {
+    alt_down = 0;
+  } else if (key == 0x5b || key == 0x5c) {
+    super_down = 1;
+  } else if (key == 0xdb || key == 0xdc) {
+    super_down = 0;
   } else if (key == 0x1c) {
     line[line_at] = '\0';
     setmove_cursor(0, 1);
