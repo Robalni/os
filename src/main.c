@@ -19,9 +19,7 @@ int pow(int base, int exp);
 void kmain(void)
 {
   set_key_event_handler(shell_key_event);
-  clear_screen();
-  printat(0, 0, CYAN, "Last key pressed: (none)");
-  set_cursor(80);
+  shell_start();
   while (1) {
     halt();
   }

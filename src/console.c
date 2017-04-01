@@ -31,6 +31,11 @@ void move_cursor(int x, int y)
   set_cursor(cursor + x + y*80);
 }
 
+void update_cursor(void)
+{
+  set_cursor(cursor);
+}
+
 void setmove_cursor(int x, int y)
 {
   set_cursor((cursor / 80 + y) * 80 + x);

@@ -14,6 +14,8 @@ void putchar_here(enum color color, char ch);
 
 void set_cursor(int cur);
 
+void update_cursor();
+
 void move_cursor(int x, int y);
 
 void setmove_cursor(int x, int y);
