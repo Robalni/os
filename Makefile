@@ -1,19 +1,22 @@
+CC = gcc
+override CFLAGS := -m32 -ffreestanding $(CFLAGS)
+
 all: os.img
 
 start.o: src/start.asm
 	nasm -w+orphan-labels -f elf32 -o start.o src/start.asm
 
 main.o: src/main.c src/shell.h src/keyboard.h src/console.h
-	gcc -m32 -ffreestanding -c src/main.c
+	$(CC) $(CFLAGS) -c src/main.c
 
 keyboard.o: src/keyboard.c src/keyboard.h
-	gcc -m32 -ffreestanding -c src/keyboard.c
+	$(CC) $(CFLAGS) -c src/keyboard.c
 
 console.o: src/console.c src/console.h
-	gcc -m32 -ffreestanding -c src/console.c
+	$(CC) $(CFLAGS) -c src/console.c
 
 shell.o: src/shell.c src/shell.h src/console.h
-	gcc -m32 -ffreestanding -c src/shell.c
+	$(CC) $(CFLAGS) -c src/shell.c
 
 os.elf: start.o main.o keyboard.o console.o shell.o
 	ld -nostdlib -o os.elf -T link.ld $^
@@ -27,6 +30,7 @@ os.img: boot.bin os.bin
 boot.bin: src/boot.asm
 	nasm -w+orphan-labels -f bin -o boot.bin src/boot.asm
 
+.PHONY: clean
 clean:
 	rm -f os *.o *.bin *.elf *.img
 
