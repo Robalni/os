@@ -91,8 +91,10 @@ static void show_prompt(void)
 
 static void clear(void)
 {
-  line_at = 0;
+  line[line_at] = '\0';
   clear_screen();
   set_cursor(80);
   show_prompt();
+  print(line);
+  update_cursor();
 }
