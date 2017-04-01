@@ -3,9 +3,9 @@
 
 static int shift_down = 0;
 static int ctrl_down = 0;
-static char line[81];
-static int line_at = 0;
 #define MAX_LINE_LENGTH 50
+static char line[MAX_LINE_LENGTH + 1];
+static int line_at = 0;
 
 static int run_command(char *line);
 
