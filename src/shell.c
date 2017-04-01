@@ -1,4 +1,5 @@
 #include "shell.h"
+#include "keyboard.h"
 #include "console.h"
 
 static int shift_down = 0;
@@ -8,12 +9,17 @@ static int super_down = 0;
 #define MAX_LINE_LENGTH 50
 static char line[MAX_LINE_LENGTH + 1];
 static int line_at = 0;
+static const char * const figures = "0123456789ABCDEF";
 
 static int run_command(char *line);
 
 static void show_prompt(void);
 
 static void clear(void);
+
+static void int2str(int number, char *str, int base);
+
+static int pow(int base, int exp);
 
 void shell_start(void)
 {
@@ -106,4 +112,26 @@ static void clear(void)
   show_prompt();
   print(line);
   update_cursor();
+}
+
+static void int2str(int number, char *str, int base)
+{
+  int pos = 0;
+  int posvalue = pow(base, 3);
+  while (pos < 4) {
+    str[pos] = *(figures + number / posvalue % base);
+    pos++;
+    posvalue /= base;
+  }
+  str[pos] = '\0';
+}
+
+static int pow(int base, int exp)
+{
+  int value = 1;
+  int i;
+  for (i = 0; i < exp; i++) {
+    value *= base;
+  }
+  return value;
 }

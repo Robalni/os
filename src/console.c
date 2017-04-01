@@ -4,6 +4,8 @@ static int cursor = 80;
 static unsigned short *base_video_port = (unsigned short*)0x0463;
 static char * const vidmem = (char*)0xb8000;
 
+static void outb(int port, int val);
+
 void putchar_at(int x, int y, enum color color, char ch)
 {
   char *vidmem = (char*)0xb8000;
@@ -49,7 +51,9 @@ void putchar(char ch)
 
 int print(char *msg)
 {
-  cursor += printat(cursor, 0, LIGHTGREY, msg);
+  int length = printat(cursor, 0, LIGHTGREY, msg);
+  cursor += length;
+  return length;
 }
 
 int printat(int x, int y, enum color color, char *msg)
@@ -70,4 +74,11 @@ void clear_screen(void)
   for (i = 0; i < 80*25; i++) {
     putchar_at(i, 0, LIGHTGREY, 0);
   }
+}
+
+static void outb(int port, int val)
+{
+  asm("outb %%al, %%dx"
+      :
+      : "al"(val), "dx"(port));
 }

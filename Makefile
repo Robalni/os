@@ -1,5 +1,5 @@
 CC = gcc
-override CFLAGS := -m32 -ffreestanding $(CFLAGS)
+override CFLAGS := -m32 -ffreestanding -Wall -Wextra $(CFLAGS)
 
 all: os.img
 
@@ -15,7 +15,7 @@ keyboard.o: src/keyboard.c src/keyboard.h
 console.o: src/console.c src/console.h
 	$(CC) $(CFLAGS) -c src/console.c
 
-shell.o: src/shell.c src/shell.h src/console.h
+shell.o: src/shell.c src/shell.h src/keyboard.h src/console.h
 	$(CC) $(CFLAGS) -c src/shell.c
 
 os.elf: start.o main.o keyboard.o console.o shell.o
