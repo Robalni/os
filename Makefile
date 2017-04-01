@@ -30,5 +30,5 @@ boot.bin: src/boot.asm
 clean:
 	rm -f os *.o *.bin *.elf *.img
 
-run:
+run: os.img
 	qemu-system-i386 -drive file=os.img,format=raw,if=floppy
