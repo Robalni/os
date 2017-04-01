@@ -15,10 +15,9 @@ static void clear(void);
 
 void shell_start(void)
 {
-  clear_screen();
+  line_at = 0;
+  clear();
   printat(0, 0, CYAN, "Last key pressed: (none)");
-  set_cursor(80);
-  show_prompt();
 }
 
 void shell_key_event(int key)
