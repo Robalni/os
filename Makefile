@@ -3,16 +3,16 @@ all: os.img
 start.o: src/start.asm
 	nasm -w+orphan-labels -f elf32 -o start.o src/start.asm
 
-main.o: src/main.c
+main.o: src/main.c src/shell.h src/keyboard.h src/console.h
 	gcc -m32 -ffreestanding -c src/main.c
 
-keyboard.o: src/keyboard.c
+keyboard.o: src/keyboard.c src/keyboard.h
 	gcc -m32 -ffreestanding -c src/keyboard.c
 
-console.o: src/console.c
+console.o: src/console.c src/console.h
 	gcc -m32 -ffreestanding -c src/console.c
 
-shell.o: src/shell.c
+shell.o: src/shell.c src/shell.h src/console.h
 	gcc -m32 -ffreestanding -c src/shell.c
 
 os.elf: main.o start.o keyboard.o console.o shell.o
