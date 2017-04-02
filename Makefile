@@ -4,35 +4,35 @@ override CFLAGS := -m32 -ffreestanding -Wall -Wextra $(CFLAGS)
 all: os.img
 
 start.o: src/start.asm
-	nasm -w+orphan-labels -f elf32 -o start.o src/start.asm
+	nasm -w+orphan-labels -f elf32 -o $@ $<
 
 main.o: src/main.c src/shell.h src/keyboard.h src/console.h
-	$(CC) $(CFLAGS) -c src/main.c
+	$(CC) $(CFLAGS) -c $<
 
 keyboard.o: src/keyboard.c src/keyboard.h
-	$(CC) $(CFLAGS) -c src/keyboard.c
+	$(CC) $(CFLAGS) -c $<
 
 console.o: src/console.c src/console.h
-	$(CC) $(CFLAGS) -c src/console.c
+	$(CC) $(CFLAGS) -c $<
 
 shell.o: src/shell.c src/shell.h src/keyboard.h src/console.h
-	$(CC) $(CFLAGS) -c src/shell.c
+	$(CC) $(CFLAGS) -c $<
 
 os.elf: start.o main.o keyboard.o console.o shell.o
-	ld -nostdlib -o os.elf -T link.ld $^
+	ld -nostdlib -o $@ -T link.ld $^
 
 os.bin: os.elf
-	objcopy -O binary os.elf os.bin
+	objcopy -O binary $< $@
 
 os.img: boot.bin os.bin
-	cat boot.bin os.bin > os.img
+	cat $^ > $@
 
 boot.bin: src/boot.asm
-	nasm -w+orphan-labels -f bin -o boot.bin src/boot.asm
+	nasm -w+orphan-labels -f bin -o $@ $<
 
 .PHONY: clean
 clean:
 	rm -f os *.o *.bin *.elf *.img
 
 run: os.img
-	qemu-system-i386 -drive file=os.img,format=raw,if=floppy
+	qemu-system-i386 -drive file=$<,format=raw,if=floppy
