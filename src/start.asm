@@ -3,7 +3,7 @@
 section .text
         global start
         extern kmain
-        extern key_pressed
+        extern key_event_handler
 
 start:
         mov al, 0x10
@@ -19,7 +19,6 @@ start:
         mov al, 0xff
         out 0xa1, al
         lidt [idt]
-        sti
 
         call kmain
         jmp $
@@ -41,7 +40,7 @@ readkbd:
         cmp al, 0
         je readkbd
         push eax
-        call key_pressed
+        call [key_event_handler]
 
         pop eax
         iret

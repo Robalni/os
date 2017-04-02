@@ -15,18 +15,11 @@ static const char * const chars_colemak_shift =
   "QWFPGJLUY:{}  "
   "ARSTDHNEIO\"~ |"
   "ZXCVBKM<>?    ";
-static void (*key_event_handler)(int) = 0;
+void (*key_event_handler)(int) = 0;
 
 void set_key_event_handler(void (*handler)(int))
 {
   key_event_handler = handler;
-}
-
-void key_pressed(int key)
-{
-  if (key_event_handler) {
-    key_event_handler(key);
-  }
 }
 
 char kbd_to_char(int key, int shift)

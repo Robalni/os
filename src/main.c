@@ -12,6 +12,7 @@ static char * const vidmem2 = (char*)0xa0000;
 void kmain(void)
 {
   set_key_event_handler(shell_key_event);
+  asm("sti");
   shell_start();
   while (1) {
     halt();
