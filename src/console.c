@@ -22,10 +22,6 @@ void putchar_here(enum color color, char ch)
 void set_cursor(int cur)
 {
   cursor = cur;
-  outb(*base_video_port, 0x0f);
-  outb(*base_video_port + 1, cursor & 0xff);
-  outb(*base_video_port, 0x0e);
-  outb(*base_video_port + 1, (cursor>>8) & 0xff);
 }
 
 void move_cursor(int x, int y)
@@ -35,7 +31,10 @@ void move_cursor(int x, int y)
 
 void update_cursor(void)
 {
-  set_cursor(cursor);
+  outb(*base_video_port, 0x0f);
+  outb(*base_video_port + 1, cursor & 0xff);
+  outb(*base_video_port, 0x0e);
+  outb(*base_video_port + 1, (cursor>>8) & 0xff);
 }
 
 void setmove_cursor(int x, int y)
@@ -45,15 +44,32 @@ void setmove_cursor(int x, int y)
 
 void putchar(char ch)
 {
-  putchar_at(cursor, 0, LIGHTGREY, ch);
-  set_cursor(cursor+1);
+  putchar_color(LIGHTGREY, ch);
+}
+
+void putchar_color(enum color color, char ch)
+{
+  if (ch == '\n') {
+    setmove_cursor(0, 1);
+  } else {
+    putchar_at(cursor, 0, color, ch);
+    cursor++;
+  }
 }
 
 int print(char *msg)
 {
-  int length = printat(cursor, 0, LIGHTGREY, msg);
-  cursor += length;
-  return length;
+  return print_color(LIGHTGREY, msg);
+}
+
+int print_color(enum color color, char *msg)
+{
+  int i = 0;
+  while (msg[i] != '\0') {
+    putchar_color(color, msg[i]);
+    i++;
+  }
+  return i;
 }
 
 int printat(int x, int y, enum color color, char *msg)

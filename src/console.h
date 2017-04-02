@@ -22,7 +22,11 @@ void setmove_cursor(int x, int y);
 
 void putchar(char ch);
 
+void putchar_color(enum color color, char ch);
+
 int print(char *msg);
+
+int print_color(enum color color, char *msg);
 
 int printat(int x, int y, enum color color, char *msg);
 

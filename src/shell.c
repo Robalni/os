@@ -11,6 +11,8 @@ static char line[MAX_LINE_LENGTH + 1];
 static int line_at = 0;
 static const char * const figures = "0123456789ABCDEF";
 
+static int strcmp(char* s1, char* s2);
+
 static int run_command(char *line);
 
 static void show_prompt(void);
@@ -26,6 +28,8 @@ void shell_start(void)
   line_at = 0;
   clear();
   printat(0, 0, CYAN, "Last key pressed: (none)");
+  print_color(GREEN, "\n  Welcome to this useless shell!\n\n");
+  show_prompt();
 }
 
 void shell_key_event(int key)
@@ -51,7 +55,7 @@ void shell_key_event(int key)
     setmove_cursor(0, 1);
     int status = run_command(line);
     if (status == -1) {
-      print("Unknown command: ");
+      print_color(RED, "Unknown command: ");
       print(line);
       setmove_cursor(0, 1);
     }
@@ -59,10 +63,18 @@ void shell_key_event(int key)
     show_prompt();
   } else if (key == 0x16 && ctrl_down) {
     clear();
+    show_prompt();
+  } else if (key == 0x2e && ctrl_down) {
+    print("^C\n");
+    line_at = 0;
+    show_prompt();
+  } else if (key == 0x22 && ctrl_down && line_at == 0) {
+    shell_start();
   } else if (key == 0x0e) {
     if (line_at > 0) {
       line_at--;
       move_cursor(-1, 0);
+      update_cursor();
       putchar_here(LIGHTGREY, ' ');
     }
   } else if (key == 0x48) {
@@ -78,6 +90,7 @@ void shell_key_event(int key)
       char ch = kbd_to_char(key, shift_down);
       line[line_at++] = ch;
       putchar(ch);
+      update_cursor();
     }
   }
   printat(0, 0, CYAN, "Last key pressed: 0x");
@@ -86,13 +99,25 @@ void shell_key_event(int key)
   printat(20, 0, CYAN, key_str);
 }
 
+static int strcmp(char* s1, char* s2)
+{
+  while (*s1 != '\0' && *s1 == *s2) {
+    s1++;
+    s2++;
+  }
+  return (*s1 > *s2) - (*s1 < *s2);
+}
+
 static int run_command(char *line)
 {
   int i = 0;
   while (line[i] == ' ') {
     i++;
   }
-  if (line[i] != '\0') {
+  if (strcmp(line+i, "help") == 0) {
+    print("Commands:\n");
+    print("  help - Displays this help\n");
+  } else if (line[i] != '\0') {
     return -1;
   }
   return 0;
@@ -100,18 +125,16 @@ static int run_command(char *line)
 
 static void show_prompt(void)
 {
-  print("$ ");
+  line[line_at] = '\0';
+  print_color(BROWN, "> ");
+  print(line);
   update_cursor();
 }
 
 static void clear(void)
 {
-  line[line_at] = '\0';
   clear_screen();
   set_cursor(80);
-  show_prompt();
-  print(line);
-  update_cursor();
 }
 
 static void int2str(int number, char *str, int base)
