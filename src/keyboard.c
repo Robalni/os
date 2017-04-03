@@ -7,7 +7,7 @@ static const char * const chars_qwerty =
   "zxcvbnm,./    ";
 static const char * const chars_qwerty_shift =
   "\x00 !@#$%^&*()_+  "
-  "QWERTYUIOP[]  "
+  "QWERTYUIOP{}  "
   "ASDFGHJKL:\"~ |"
   "ZXCVBNM<>?    ";
 static const char * const chars_colemak =
