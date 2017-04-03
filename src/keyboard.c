@@ -1,10 +1,15 @@
 #include "keyboard.h"
 
 static const char * const chars_qwerty =
-  "\x00 1234567890    "
-  "qwertyiop;[]  "
-  "asdfghjkl;'\\  "
+  "\x00 1234567890-=  "
+  "qwertyuiop[]  "
+  "asdfghjkl;'` \\"
   "zxcvbnm,./    ";
+static const char * const chars_qwerty_shift =
+  "\x00 !@#$%^&*()_+  "
+  "QWERTYUIOP[]  "
+  "ASDFGHJKL:\"~ |"
+  "ZXCVBNM<>?    ";
 static const char * const chars_colemak =
   "\x00 1234567890-=  "
   "qwfpgjluy;[]  "
