@@ -6,7 +6,10 @@ all: os.img
 start.o: src/start.asm
 	nasm -w+orphan-labels -f elf32 -o $@ $<
 
-main.o: src/main.c src/shell.h src/keyboard.h src/console.h
+main.o: src/main.c src/shell.h src/keyboard.h src/console.h src/graphics.h
+	$(CC) $(CFLAGS) -c $<
+
+graphics.o: src/graphics.c src/graphics.h
 	$(CC) $(CFLAGS) -c $<
 
 keyboard.o: src/keyboard.c src/keyboard.h
@@ -18,7 +21,7 @@ console.o: src/console.c src/console.h
 shell.o: src/shell.c src/shell.h src/keyboard.h src/console.h
 	$(CC) $(CFLAGS) -c $<
 
-os.elf: start.o main.o keyboard.o console.o shell.o
+os.elf: start.o main.o graphics.o keyboard.o console.o shell.o
 	ld -nostdlib -o $@ -T link.ld $^
 
 os.bin: os.elf
