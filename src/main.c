@@ -4,11 +4,6 @@
 #include "winman.h"
 
 #define halt() asm("hlt")
-#define MAX(x,y) ((x) > (y) ? (x) : (y))
-#define MIN(x,y) ((x) < (y) ? (x) : (y))
-#define ABS(x) ((x) < 0 ? (-(x)) : (x))
-
-static char * const vidmem2 = (char*)0xa0000;
 
 void kmain(void)
 {
