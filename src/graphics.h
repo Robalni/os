@@ -7,4 +7,6 @@ void draw_pixel(int x, int y, int color);
 
 void draw_rect(int x, int y, int w, int h, int color);
 
+void draw_border(int x, int y, int w, int h, int color);
+
 #endif /* GRAPHICS_H */

@@ -1,7 +1,7 @@
 #include "shell.h"
 #include "keyboard.h"
 #include "console.h"
-#include "graphics.h"
+#include "winman.h"
 
 #define halt() asm("hlt")
 #define MAX(x,y) ((x) > (y) ? (x) : (y))
@@ -15,9 +15,8 @@ void kmain(void)
   //set_key_event_handler(shell_key_event);
   //asm("sti");
   //shell_start();
-  fill_screen(0xdddddd);
-  draw_rect(411, 283, 202, 202, 0x77aa55);
-  draw_rect(412, 284, 200, 200, 0xaacc99);
+  winman_start();
+  draw_window(100, 200, 400, 300);
   while (1) {
     halt();
   }
