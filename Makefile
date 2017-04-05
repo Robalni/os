@@ -1,5 +1,5 @@
 CC = gcc
-override CFLAGS := -m32 -ffreestanding -Wall -Wextra $(CFLAGS)
+override CFLAGS := -m32 -ffreestanding -Wall -Wextra -O2 $(CFLAGS)
 
 all: os.img
 
