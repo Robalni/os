@@ -64,8 +64,6 @@ static void draw_window(Window* w)
             w->h+title_height+padding, 0xcccccc);
   draw_border(w->x-padding, w->y-title_height, w->w+padding*2,
               w->h+title_height+padding, border_color);
-  draw_rect(w->x, w->y, w->w, w->h, 0xffffff);
-  //draw_border(w->x, w->y, w->w, w->h, border_color);
   if (w->content) {
     draw_content(w->x, w->y, w->w, w->h, w->content);
   }
