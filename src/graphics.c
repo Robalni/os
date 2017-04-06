@@ -47,6 +47,16 @@ void draw_border(int x, int y, int w, int h, int color)
   draw_rect(x+w, y, 1, h, color);
 }
 
+void draw_content(int x, int y, int w, int h, char* content)
+{
+  int i, j;
+  for (j = 0; j < h; j++) {
+    for (i = 0; i < w; i++) {
+      draw_pixel(x+i, y+j, ((int*)content)[0]);
+    }
+  }
+}
+
 static void set_color(unsigned char* pixel, int color)
 {
   pixel[0] = color;

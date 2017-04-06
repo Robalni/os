@@ -7,11 +7,12 @@
 
 void kmain(void)
 {
-  //set_key_event_handler(shell_key_event);
-  //asm("sti");
-  //shell_start();
+  set_key_event_handler(winman_key_event);
+  asm("sti");
   winman_start();
-  draw_window(100, 200, 400, 300);
+  int c = 0xffffff;
+  new_window(100, 200, 400, 300, &c);
+  new_window(500, 100, 500, 500, &c);
   while (1) {
     halt();
   }
