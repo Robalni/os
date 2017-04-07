@@ -43,8 +43,17 @@ void move_window(Window* win, int dx, int dy)
 void winman_key_event(int key)
 {
   switch (key) {
-  case 0x22:
-    move_window(&window_list[focused], 10, 2);
+  case 0x48:
+    move_window(&window_list[focused], 0, -10);
+    break;
+  case 0x4b:
+    move_window(&window_list[focused], -10, 0);
+    break;
+  case 0x4d:
+    move_window(&window_list[focused], 10, 0);
+    break;
+  case 0x50:
+    move_window(&window_list[focused], 0, 10);
     break;
   case 0x5b:
   case 0x5c:
