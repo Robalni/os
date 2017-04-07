@@ -2,8 +2,12 @@
 #include "keyboard.h"
 #include "console.h"
 #include "winman.h"
+#include "graphics.h"
 
 #define halt() asm("hlt")
+
+char buf[400*300*3];
+char* winstr = "AAAAAAA";
 
 void kmain(void)
 {
@@ -11,7 +15,11 @@ void kmain(void)
   asm("sti");
   winman_start();
   int c = 0xffffff;
-  new_window(100, 200, 400, 300, &c);
+  int i;
+  for (i = 0; winstr[i] != '\0'; i++) {
+    draw_char(i*8, 0, winstr[i], 0xffffff, buf, 400);
+  }
+  new_window(100, 200, 400, 300, buf);
   new_window(500, 100, 500, 500, &c);
   while (1) {
     halt();

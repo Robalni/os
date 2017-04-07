@@ -9,7 +9,7 @@ bootloader:
         mov sp, ax
 
         mov ah, 2               ; read
-        mov al, 11              ; n o sectors
+        mov al, 14              ; n o sectors
         mov ch, 0               ; cylinder
         mov cl, 2
         mov dh, 0
