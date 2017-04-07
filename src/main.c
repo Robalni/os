@@ -7,7 +7,7 @@
 #define halt() asm("hlt")
 
 char buf[400*300*3];
-char* winstr = "AAAAAAA";
+char* winstr = "AAAAAAA 0123456789";
 
 void kmain(void)
 {
