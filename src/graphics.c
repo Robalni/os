@@ -1,6 +1,9 @@
 #include "graphics.h"
 #include "font.h"
 
+#define MAX(a, b) ((a) > (b) ? (a) : (b))
+#define MIN(a, b) ((a) < (b) ? (a) : (b))
+
 static unsigned char** const vesamem = (unsigned char**)0x10;
 static int scr_w = 1024;
 static int scr_h = 768;
@@ -28,6 +31,14 @@ void draw_rect(int x, int y, int w, int h, int color)
     }
     pos += scr_w3;
   }
+}
+
+void draw_rect_r(int x, int y, int w, int h,
+                 int x2, int y2, int w2, int h2, int color)
+{
+  int newx = MAX(x, x2);
+  int newy = MAX(y, y2);
+  draw_rect(newx, newy, MIN(x+w, x2+w2)-newx, MIN(y+h, y2+h2)-newy, color);
 }
 
 void draw_pixel(int x, int y, int color)

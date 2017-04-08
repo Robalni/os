@@ -2,6 +2,10 @@
 #include "graphics.h"
 #include "keyboard.h"
 
+#define MAX(a, b) ((a) > (b) ? (a) : (b))
+#define MIN(a, b) ((a) < (b) ? (a) : (b))
+#define ABS(a) ((a) < 0 ? (-a) : (a))
+
 #define MAX_N_WINDOWS 16
 static Window window_list[MAX_N_WINDOWS];
 static int n_windows;
@@ -11,8 +15,12 @@ static int super_down;
 
 static int bgcolor = 0xd0d8e8;
 
-static void draw_window(Window* w);
-static void draw_everything(void);
+static void draw_window(Window* win);
+static void draw_window_r(Window* win, int x, int y, int w, int h);
+static void draw_everything(int x, int y, int w, int h);
+
+static int title_height = 24;
+static int padding = 2;
 
 void winman_start(void)
 {
@@ -35,9 +43,14 @@ void new_window(int x, int y, int w, int h, char* content)
 
 void move_window(Window* win, int dx, int dy)
 {
+  int wx = win->x - padding - 1;
+  int wy = win->y - title_height - 1;
+  int ww = win->w + padding*2 + 2;
+  int wh = win->h + padding + title_height + 2;
   win->x += dx;
   win->y += dy;
-  draw_everything();
+  draw_everything(MIN(wx + dx, wx), MIN(wy + dy, wy),
+                  ww + ABS(dx), wh + ABS(dy));
 }
 
 void winman_key_event(int key)
@@ -66,35 +79,45 @@ void winman_key_event(int key)
   case 0x0f:
     if (super_down || 1) {
       focused = (focused + 1) % n_windows;
-      draw_everything();
+      draw_everything(0, 0, 1024, 768);
     }
     break;
   }
 }
 
-static void draw_everything(void)
+static void draw_everything(int x, int y, int w, int h)
 {
   int i;
-  fill_screen(bgcolor);
+  draw_rect(x, y, w, h, bgcolor);
   for (i = 0; i < n_windows; i++) {
-    draw_window(&window_list[i]);
+    draw_window_r(&window_list[i], x, y, w, h);
   }
 }
 
-static void draw_window(Window* w)
+static void draw_window(Window* win)
 {
-  int title_height = 24;
+  draw_window_r(win, win->x - padding - 1, win->y - title_height - 1,
+                win->w + padding*2 + 2, win->h + title_height + padding + 2);
+}
+
+static void draw_window_r(Window* win, int x, int y, int w, int h)
+{
   int border_color = 0x666666;
   int window_color = 0xcccccc;
-  if (window_list + focused == w) {
+  if (window_list + focused == win) {
     window_color = 0x99ccff;
   }
-  int padding = 2;
-  draw_rect(w->x-padding, w->y-title_height, w->w+padding*2,
-            w->h+title_height+padding, window_color);
-  draw_border(w->x-padding, w->y-title_height, w->w+padding*2,
-              w->h+title_height+padding, border_color);
-  if (w->content) {
-    draw_content(w->x, w->y, w->w, w->h, w->content);
+  draw_rect_r(win->x-padding, win->y-title_height, win->w+padding*2,
+              title_height, x, y, w, h, window_color);
+  draw_rect_r(win->x-padding, win->y, padding, win->h,
+              x, y, w, h, window_color);
+  draw_rect_r(win->x+win->w, win->y, padding, win->h,
+              x, y, w, h, window_color);
+  draw_rect_r(win->x-padding, win->y+win->h, win->w+padding*2, padding,
+              x, y, w, h, window_color);
+  draw_border(win->x-padding, win->y-title_height, win->w+padding*2,
+              win->h+title_height+padding, border_color);
+  if (win->content) {
+    draw_content(win->x, win->y, win->w, win->h, win->content);
   }
 }
