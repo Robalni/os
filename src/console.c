@@ -25,7 +25,7 @@ void putchar_at_(int x, int y, enum color color, char ch)
 void putchar_at(int x, int y, enum color color, char ch)
 {
   extern char buf[400*300*3];
-  draw_char(x%80*8, x/80*16 + y*16, ch, colors[color], buf, 400);
+  draw_char(x%80*8, x/80*16 + y*16, ch, colors[color], buf, 400, 0x000000);
 }
 
 void putchar_here(enum color color, char ch)

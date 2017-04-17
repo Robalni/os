@@ -14,6 +14,7 @@ void draw_border(int x, int y, int w, int h, int color);
 
 void draw_content(int x, int y, int w, int h, char* content);
 
-void draw_char(int x, int y, char ch, int color, char* buf, int buf_w);
+void draw_char(int x, int y, char ch, int color, char* buf, int buf_w,
+               int fill);
 
 #endif /* GRAPHICS_H */

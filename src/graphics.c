@@ -77,7 +77,8 @@ void draw_content(int x, int y, int w, int h, char* content)
   }
 }
 
-void draw_char(int x, int y, char ch, int color, char* buf, int buf_w)
+void draw_char(int x, int y, char ch, int color, char* buf, int buf_w,
+               int fill)
 {
   x *= 3;
   buf_w *= 3;
@@ -88,6 +89,8 @@ void draw_char(int x, int y, char ch, int color, char* buf, int buf_w)
       int c = font[ch*16+j] & (128>>i);
       if (c) {
         set_color(&buf[i*3], color);
+      } else if (fill >= 0) {
+        set_color(&buf[i*3], fill);
       }
     }
     buf += buf_w;
