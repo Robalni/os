@@ -75,24 +75,40 @@ set_vesa_mode:
         ret
 
 vesa_error:
-        mov di, vesa_error_msg
-        call print
-        jmp $
-vesa_error_msg:
-        db "VESA error!", 0x0d, 0x0a, 0
+        mov si, .msg
+        call println
+        jmp halt
+.msg:   db "VESA error!", 0
 
-;;; Prints a message. You should put the address to the message in di.
+;;; Prints a message. You should put the address of the message in si.
 ;;; A message must be null terminated.
 print:
         mov ah, 0x0e
-        mov al, [di]
-print_loop:
-        int 0x10
-        inc di
-        mov al, [di]
+.loop:
+        lodsb
         cmp al, 0
-        jne print_loop
+        je .end
+        int 0x10
+        jmp .loop
+.end:
         ret
+
+;;; Prints a message + line break. You shold put the address of the
+;;; message in si. A message must be null terminated.
+println:
+        call print
+        mov al, 0x0d
+        int 0x10
+        mov al, 0x0a
+        int 0x10
+        ret
+
+halt:
+        mov si, .msg
+        call println
+        cli
+        hlt
+.msg:   db "System halted.", 0
 
 protected:
         use32
