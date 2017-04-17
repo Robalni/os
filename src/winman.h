@@ -8,11 +8,13 @@ typedef struct {
   int w;
   int h;
   char* content;
+  void (*key_event_handler)(int);
 } Window;
 
 void winman_start(void);
 
-void new_window(int x, int y, int w, int h, char* content);
+void new_window(int x, int y, int w, int h, char* content,
+                void (*key_event_handler)(int));
 
 void move_window(Window* win, int dx, int dy);
 

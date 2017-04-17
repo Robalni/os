@@ -27,7 +27,8 @@ void winman_start(void)
   fill_screen(bgcolor);
 }
 
-void new_window(int x, int y, int w, int h, char* content)
+void new_window(int x, int y, int w, int h, char* content,
+                void (*key_event_handler)(int))
 {
   if (n_windows < MAX_N_WINDOWS) {
     Window* win = &window_list[n_windows];
@@ -36,6 +37,7 @@ void new_window(int x, int y, int w, int h, char* content)
     win->w = w;
     win->h = h;
     win->content = content;
+    win->key_event_handler = key_event_handler;
     n_windows++;
     draw_window(win);
   }
@@ -82,6 +84,11 @@ void winman_key_event(int key)
       draw_everything(0, 0, 1024, 768);
     }
     break;
+  }
+  Window* win = &window_list[focused];
+  if (win->key_event_handler) {
+    win->key_event_handler(key);
+    draw_everything(win->x, win->y, win->w, win->h);
   }
 }
 

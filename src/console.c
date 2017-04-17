@@ -1,17 +1,31 @@
 #include "console.h"
+#include "graphics.h"
 
 static int cursor = 80;
 static unsigned short *base_video_port = (unsigned short*)0x0463;
 static char * const vidmem = (char*)0xb8000;
 
+static int colors[] = {
+  0x000000, 0x0000ff, 0x00ff00, 0x00ffff,
+  0xff0000, 0xff00ff, 0xcc6600, 0xcccccc,
+  0x666666, 0x6666ff, 0x66ff66, 0x66ffff,
+  0xff6666, 0xff66ff, 0xffff00, 0xffffff
+};
+
 static void outb(int port, int val);
 
-void putchar_at(int x, int y, enum color color, char ch)
+void putchar_at_(int x, int y, enum color color, char ch)
 {
   char *vidmem = (char*)0xb8000;
   int i = (x + 80*y) * 2;
   vidmem[i] = ch;
   vidmem[i + 1] = color;
+}
+
+void putchar_at(int x, int y, enum color color, char ch)
+{
+  extern char buf[400*300*3];
+  draw_char(x%80*8, x/80*16 + y*16, ch, colors[color], buf, 400);
 }
 
 void putchar_here(enum color color, char ch)
@@ -88,7 +102,7 @@ void clear_screen(void)
 {
   int i;
   for (i = 0; i < 80*25; i++) {
-    putchar_at(i, 0, LIGHTGREY, 0);
+    putchar_at(i, 0, LIGHTGREY, ' ');
   }
 }
 

@@ -14,13 +14,9 @@ void kmain(void)
   set_key_event_handler(winman_key_event);
   asm("sti");
   winman_start();
-  int c = 0xffffff;
-  int i;
-  for (i = 0; winstr[i] != '\0'; i++) {
-    draw_char(i*8, 0, winstr[i], 0xffffff, buf, 400);
-  }
-  new_window(100, 200, 400, 300, buf);
-  new_window(500, 100, 500, 500, &c);
+  new_window(100, 200, 400, 300, buf, shell_key_event);
+  new_window(500, 100, 400, 500, 2, 0);
+  shell_start();
   while (1) {
     halt();
   }
