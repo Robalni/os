@@ -15,7 +15,7 @@ void kmain(void)
   asm("sti");
   winman_start();
   new_window(100, 200, 400, 300, buf, shell_key_event);
-  new_window(500, 100, 400, 500, 2, 0);
+  new_window(500, 100, 400, 500, 3, 0);
   shell_start();
   while (1) {
     halt();
