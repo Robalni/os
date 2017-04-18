@@ -12,9 +12,9 @@ void draw_rect_r(int x, int y, int w, int h,
 
 void draw_border(int x, int y, int w, int h, int color);
 
-void draw_content(int x, int y, int w, int h, char* content);
+void draw_content(int x, int y, int w, int h, unsigned char* content);
 
-void draw_char(int x, int y, char ch, int color, char* buf, int buf_w,
+void draw_char(int x, int y, char ch, int color, unsigned char* buf, int buf_w,
                int fill);
 
 #endif /* GRAPHICS_H */

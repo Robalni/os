@@ -27,7 +27,7 @@ void winman_start(void)
   fill_screen(bgcolor);
 }
 
-void new_window(int x, int y, int w, int h, char* content,
+void new_window(int x, int y, int w, int h, unsigned char* content,
                 void (*key_event_handler)(int))
 {
   if (n_windows < MAX_N_WINDOWS) {
