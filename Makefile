@@ -44,4 +44,4 @@ clean:
 	rm -f os *.o *.bin *.elf *.img
 
 run: os.img
-	qemu-system-i386 -drive file=$<,format=raw,if=floppy
+	qemu-system-i386 -drive file=$<,format=raw,if=floppy -d guest_errors
