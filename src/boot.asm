@@ -1,22 +1,22 @@
         use16
-
         org 0x7c00
         jmp bootloader
 
 bootloader:
+        cli
+
         ;; Stack
         mov ax, 0x7bff
         mov sp, ax
 
         mov ah, 2               ; read
-        mov al, 20              ; n o sectors
+        mov al, 60              ; n o sectors
         mov ch, 0               ; cylinder
         mov cl, 2
         mov dh, 0
         mov bx, 0x7e00
         int 0x13
 
-        cli
         xor ax, ax
         mov ds, ax
         mov es, ax
