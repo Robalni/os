@@ -113,12 +113,12 @@ halt:
 protected:
         use32
 
-        mov eax, 0x10
-        mov ds, eax
-        mov es, eax
-        mov fs, eax
-        mov gs, eax
-        mov ss, eax
+        mov ax, 0x10
+        mov ds, ax
+        mov es, ax
+        mov fs, ax
+        mov gs, ax
+        mov ss, ax
 
         mov eax, 0x7bff
         mov esp, eax
