@@ -4,7 +4,7 @@
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 
-static unsigned char** const vesamem = (unsigned char**)0x10;
+unsigned char** const vesamem = (unsigned char**)0x10;
 static int scr_w = 1024;
 static int scr_h = 768;
 

@@ -4,6 +4,7 @@ section .text
         global start
         extern kmain
         extern key_event_handler
+        extern errmsg
 
 start:
         mov al, 0x10
@@ -25,6 +26,9 @@ start:
 
 int_handle:
         pop eax
+        call errmsg
+        cli
+        hlt
         iret
 
 int_handle_kbd:

@@ -2,14 +2,27 @@
         org 0x7c00
         jmp bootloader
 
+disk_read_error:
+        db "Error: Could not copy the operating system from disk to memory.", 0
+
 bootloader:
         cli
+        cld
 
+        ;; Segment registers
+        xor ax, ax
+        mov ds, ax
+        mov es, ax
+        mov fs, ax
+        mov gs, ax
+        mov ss, ax
         ;; Stack
         mov ax, 0x7bff
         mov sp, ax
+        cli
 
-        mov ah, 2               ; read
+        ;; Read the rest of the OS from disk and put it in memory.
+        mov ah, 2               ; command: read
         mov al, 60              ; n o sectors
         mov ch, 0               ; cylinder
         mov cl, 2
@@ -17,12 +30,34 @@ bootloader:
         mov bx, 0x7e00
         int 0x13
 
-        xor ax, ax
-        mov ds, ax
-        mov es, ax
-        mov fs, ax
-        mov gs, ax
-        mov ss, ax
+        ;; Check errors
+        jc .read_failed
+        cmp ah, 0
+        jne .read_failed
+        jmp .read_ok
+.read_failed:
+        mov si, disk_read_error
+        call println
+        jmp halt
+.read_ok:
+
+        ;; Set video mode
+        mov ah, 0
+        mov al, 0x02
+        int 0x10
+
+        ;; Wait a little bit after video mode
+        mov eax, 0x10
+.l1:    dec eax
+        jnz .l1
+
+        ;; Set cursor
+        mov ah, 0x02
+        xor bh, bh
+        xor dx, dx
+        int 0x10
+
+        cli
         lgdt [gdt]
 
         call set_vesa_mode
@@ -113,15 +148,17 @@ halt:
 protected:
         use32
 
-        mov ax, 0x10
-        mov ds, ax
-        mov es, ax
-        mov fs, ax
-        mov gs, ax
-        mov ss, ax
-
+        ;; Segment registers
+        mov eax, 0x10
+        mov ds, eax
+        mov es, eax
+        mov fs, eax
+        mov gs, eax
+        mov ss, eax
+        ;; Stack
         mov eax, 0x7bff
         mov esp, eax
+        cli
 
         jmp 0x7e00
 
@@ -136,14 +173,14 @@ gdt_code:
         dw 0x0000               ; base 0:15
         db 0x00                 ; base 16:23
         db 0b10011010           ; access byte
-        db 0x4f                 ; low = limit 16:19, high = flags
+        db 0xcf                 ; low = limit 16:19, high = flags
         db 0x00                 ; base 24:31
 gdt_data:
         dw 0xffff               ; limit 0:15
         dw 0x0000               ; base 0:15
         db 0x00                 ; base 16:23
         db 0b10010010           ; access byte
-        db 0x4f                 ; low = limit 16:19, high = flags
+        db 0xcf                 ; low = limit 16:19, high = flags
         db 0x00                 ; base 24:31
 gdt:
         dw (gdt - gdt_start) - 1
