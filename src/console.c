@@ -45,6 +45,7 @@ void move_cursor(int x, int y)
 
 void update_cursor(void)
 {
+  return;
   outb(*base_video_port, 0x0f);
   outb(*base_video_port + 1, cursor & 0xff);
   outb(*base_video_port, 0x0e);
@@ -101,7 +102,7 @@ int printat(int x, int y, enum color color, char *msg)
 void clear_screen(void)
 {
   int i;
-  for (i = 0; i < 80*18; i++) {
+  for (i = 0; i < 50*18; i++) {
     putchar_at(i, 0, LIGHTGREY, ' ');
   }
 }
