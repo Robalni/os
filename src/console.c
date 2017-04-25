@@ -101,7 +101,7 @@ int printat(int x, int y, enum color color, char *msg)
 void clear_screen(void)
 {
   int i;
-  for (i = 0; i < 80*25; i++) {
+  for (i = 0; i < 80*18; i++) {
     putchar_at(i, 0, LIGHTGREY, ' ');
   }
 }

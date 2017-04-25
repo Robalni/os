@@ -71,9 +71,9 @@ bootloader:
 
 set_vesa_mode:
         ;; Choose segment and offset.
-        mov ax, 0x10
+        mov ax, 0x0000
         mov es, ax
-        mov di, 0x00
+        mov di, 0x2000
 
         ;; TODO: Put "VBE2" in [es:di]
 
@@ -104,10 +104,8 @@ set_vesa_mode:
         cmp ax, 0x004f
         jne vesa_error
 
-        mov eax, [es:di+40]     ; +40 to find the framebuffer address
-        mov [0x10], eax
-
         ret
+
 
 vesa_error:
         mov si, .msg

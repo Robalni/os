@@ -24,6 +24,7 @@ static int padding = 2;
 
 void winman_start(void)
 {
+  init_graphics();
   fill_screen(bgcolor);
 }
 

@@ -1,6 +1,8 @@
 #ifndef GRAPHICS_H
 #define GRAPHICS_H
 
+void init_graphics(void);
+
 void fill_screen(int color);
 
 void draw_pixel(int x, int y, int color);
