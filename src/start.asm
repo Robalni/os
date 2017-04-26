@@ -24,11 +24,24 @@ start:
         call kmain
         jmp $
 
-int_handle:
-        pop eax
-        call errmsg
+int_df_text:    db "double fault", 0
+int_gpf_text:   db "general protection fault", 0
+
+halt:
         cli
-        hlt
+.l:     hlt
+        jmp .l
+
+int_handle_df:
+        push int_df_text
+        call errmsg
+        jmp halt
+        iret
+
+int_handle_gpf:
+        push int_gpf_text
+        call errmsg
+        jmp halt
         iret
 
 int_handle_kbd:
@@ -60,21 +73,29 @@ readkbd:
 ;;;   1110: 80386 32-bit interrupt gate
 ;;;   1111: 80386 32-bit trap gate
 idt_start:
-        times (0x0d * 8 - ($ - idt_start)) db 0x00
-idt_gpf:
-        dw int_handle           ; offset 0:15
+        times (0x08 * 8 - ($ - idt_start)) db 0x00
+idt_df:
+        dw int_handle_df        ; offset 0:15
         dw 0x08                 ; code segment selector
         db 0x00                 ; unused
         db 0b1000_1110          ; type/attributes
         dw 0x0000               ; offset 16:31
 
+        times (0x0d * 8 - ($ - idt_start)) db 0x00
+idt_gpf:
+        dw int_handle_gpf
+        dw 0x08
+        db 0x00
+        db 0b1000_1110
+        dw 0x0000
+
         times (0x21 * 8 - ($ - idt_start)) db 0x00
 idt_keyboard:
-        dw int_handle_kbd       ; offset 0:15
-        dw 0x08                 ; code segment selector
-        db 0x00                 ; unused
-        db 0b1000_1110          ; type/attributes
-        dw 0x0000               ; offset 16:31
+        dw int_handle_kbd
+        dw 0x08
+        db 0x00
+        db 0b1000_1110
+        dw 0x0000
 
 idt:
         dw (idt - idt_start) - 1

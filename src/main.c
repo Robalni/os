@@ -22,13 +22,16 @@ char n2ch(int n)
   }
 }
 
-void errmsg(int info)
+void errmsg(char* message, int info)
 {
   extern unsigned char* vesamem;
   int i;
-  char* e = "Error! General protection fault.";
+  char* e = "Error: ";
   for (i = 0; e[i] != '\0'; i++) {
     draw_char(i*8, 0, e[i], 0xffffff, vesamem, 1024, 0x990000);
+  }
+  for (i = 0; message[i] != '\0'; i++) {
+    draw_char((i+7)*8, 0, message[i], 0xffffff, vesamem, 1024, 0x990000);
   }
   draw_char(24, 16, n2ch(info&0xf), 0xffffff, vesamem, 1024, 0x990000);
   info >>= 4;
@@ -37,7 +40,6 @@ void errmsg(int info)
   draw_char(8, 16, n2ch(info&0xf), 0xffffff, vesamem, 1024, 0x990000);
   info >>= 4;
   draw_char(0, 16, n2ch(info&0xf), 0xffffff, vesamem, 1024, 0x990000);
-  //draw_content(0, 0, 400, 300, buf);
 }
 
 void kmain(void)
