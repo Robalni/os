@@ -6,9 +6,6 @@
 
 #define halt() asm("hlt")
 
-unsigned char buf[400*300*3];
-char* winstr = "AAAAAAA 0123456789";
-
 char n2ch(int n)
 {
   if (n < 0) {
@@ -47,8 +44,8 @@ void kmain(void)
   set_key_event_handler(winman_key_event);
   asm("sti");
   winman_start();
-  new_window(100, 200, 400, 300, buf, shell_key_event);
-  new_window(500, 100, 400, 500, (unsigned char*)3, 0);
+  Window* win1 = new_window(100, 200, 400, 300, 0xffffff, shell_key_event);
+  Window* win2 = new_window(500, 100, 400, 500, 0xffffff, shell_key_event);
   shell_start();
   while (1) {
     halt();

@@ -13,7 +13,7 @@ static int focused;
 
 static int super_down;
 
-static int bgcolor = 0xd0d8e8;
+static int bgcolor = 0xdddddd;
 
 static void draw_window(Window* win);
 static void draw_window_r(Window* win, int x, int y, int w, int h);
@@ -28,7 +28,7 @@ void winman_start(void)
   fill_screen(bgcolor);
 }
 
-void new_window(int x, int y, int w, int h, unsigned char* content,
+Window* new_window(int x, int y, int w, int h, int bgcolor,
                 void (*key_event_handler)(int))
 {
   if (n_windows < MAX_N_WINDOWS) {
@@ -37,11 +37,19 @@ void new_window(int x, int y, int w, int h, unsigned char* content,
     win->y = y;
     win->w = w;
     win->h = h;
-    win->content = content;
+    win->content = (uint8_t*)(0x00ff0000 + n_windows*1024*768*3);
+    int i;
+    for (i = 0; i < w*h*3; i += 3) {
+      win->content[i] = bgcolor;
+      win->content[i+1] = bgcolor >> 8;
+      win->content[i+2] = bgcolor >> 16;
+    }
     win->key_event_handler = key_event_handler;
     n_windows++;
     draw_window(win);
+    return win;
   }
+  return 0;
 }
 
 void move_window(Window* win, int dx, int dy)
@@ -93,6 +101,11 @@ void winman_key_event(int key)
   }
 }
 
+Window* get_current_window(void)
+{
+  return &window_list[focused];
+}
+
 static void draw_everything(int x, int y, int w, int h)
 {
   int i;
@@ -110,10 +123,10 @@ static void draw_window(Window* win)
 
 static void draw_window_r(Window* win, int x, int y, int w, int h)
 {
-  int border_color = 0x666666;
-  int window_color = 0xcccccc;
+  int border_color = 0x999999;
+  int window_color = 0xeeeeee;
   if (window_list + focused == win) {
-    window_color = 0x99ccff;
+    window_color = 0xcccccc;
   }
   draw_rect_r(win->x-padding, win->y-title_height, win->w+padding*2,
               title_height, x, y, w, h, window_color);

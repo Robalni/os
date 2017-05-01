@@ -15,7 +15,7 @@ graphics.o: src/graphics.c src/graphics.h src/font.h
 keyboard.o: src/keyboard.c src/keyboard.h
 	$(CC) $(CFLAGS) -c $<
 
-console.o: src/console.c src/console.h src/graphics.h
+console.o: src/console.c src/console.h src/graphics.h src/winman.h
 	$(CC) $(CFLAGS) -c $<
 
 shell.o: src/shell.c src/shell.h src/keyboard.h src/console.h
