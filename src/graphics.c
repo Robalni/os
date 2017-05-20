@@ -22,7 +22,7 @@ static uint16_t scr_w;
 static uint16_t scr_h;
 static uint8_t bypp;
 
-static void set_color(uint8_t* pixel, int color);
+static void set_color(uint8_t* pixel, uint32_t color);
 
 void init_graphics(void)
 {
@@ -115,9 +115,13 @@ void draw_char(int x, int y, char ch, int color, uint8_t* buf, int buf_w,
   }
 }
 
-static void set_color(uint8_t* pixel, int color)
+static void set_color(uint8_t* pixel, uint32_t color)
 {
-  pixel[0] = color;
-  pixel[1] = color >> 8;
-  pixel[2] = color >> 16;
+  if (bypp == 4) {
+    ((uint32_t*)pixel)[0] = color;
+  } else {
+    pixel[0] = color;
+    pixel[1] = color >> 8;
+    pixel[2] = color >> 16;
+  }
 }

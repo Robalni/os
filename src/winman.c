@@ -37,7 +37,7 @@ Window* new_window(int x, int y, int w, int h, int bgcolor,
     win->y = y;
     win->w = w;
     win->h = h;
-    win->content = (uint8_t*)(0x00ff0000 + n_windows*1024*768*3);
+    win->content = (uint8_t*)(0x00200000 + n_windows*1024*768*3);
     int i;
     for (i = 0; i < w*h*3; i += 3) {
       win->content[i] = bgcolor;
