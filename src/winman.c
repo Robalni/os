@@ -4,7 +4,7 @@
 
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
-#define ABS(a) ((a) < 0 ? (-a) : (a))
+#define ABS(a) ((a) < 0 ? -(a) : (a))
 
 #define MAX_N_WINDOWS 16
 static Window window_list[MAX_N_WINDOWS];
