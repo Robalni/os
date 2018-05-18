@@ -1,0 +1,18 @@
+This is a simple operating system.
+
+Goals:
+
+  - Graphical but with very minimalistic style.
+  - Easy to use for normal people.
+  - Super fun and useful for nerds.
+
+Features:
+
+  - A simple shell that doesn't do anything useful.
+  - Window manager.
+
+Future features:
+
+  - Possibility to write and run programs.
+  - Networking.
+  - Multitasking.
